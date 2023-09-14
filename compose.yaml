@@ -1,0 +1,50 @@
+services:
+ # Backend API
+ node-sequelize-postgres-redis-docker: # service name
+  container_name: web
+  # image: node:8.11.1 # already defined in Dockerfile of the root
+  # build: ./ # build from Dockerfile, otherwise use the above commented image line
+  build:
+      context: ./ # Use the Dockerfile in the current directory
+      dockerfile: Dockerfile # Optional, can be removed
+  working_dir: /app # this /app is mapping with volumes /app which represents the container working dir
+  command: ["/bin/sh", "-c", "sleep 10 && npx sequelize db:migrate && npx sequelize db:seed:all && npm run start-dev"]
+  environment:
+  #  DEV_DATABASE_URI: POSTGRES_HOST://POSTGRES_USER:POSTGRES_PASSWORD@SERVICE_NAME:5432/POSTGRES_DB # in case upper env var don't work, replace postgres with localhost
+   DEV_DATABASE_URI: postgres://postgres:Root12345@postgres_db:5432/dev # this env var maps with the env var of postgres_db, database/config/config.js process.env.DEV_DATABASE_URI
+   Redis_URI: redis://redis_db:6379 # this is the env var we give for redis connection process.env.REDIS_URI
+  # links:
+  #use links or depends_on
+  depends_on: 
+   - postgres_db
+   - redis_db
+  ports:
+   - "3000:3000"  # map computer exposed port to container exposed port
+  volumes: 
+   - ./:/app # map current host working dir to container working dir /app, this line watches any changes in the host files and update them in the container dir
+
+
+ # Postgres
+ postgres_db: # service name
+  container_name: postgres # can skip container_name, if service name and container_name is same
+  environment:
+   POSTGRES_USER: postgres # use the default user postgres
+   POSTGRES_PASSWORD: Root12345 # change default or change password for user postgres to RootRoot123
+   POSTGRES_DB: dev # create new database dev
+   POSTGRES_HOST: postgres # use the default host postgres
+  #  POSTGRES_HOST_AUTH_METHOD: trust  # Allow trust connections, use this when you want to bypass passwords
+  #  image: postgres # already defined in Dockerfile of the postgres folder
+  #  build: ./postgres # building image from the postgres folder with Dockerfile, build with one line
+  build:
+   context: ./postgres # Use the Dockerfile in the current directory
+   dockerfile: Dockerfile # Optional, can be removed
+  ports:
+   - "5432:5432"  # map computer exposed port to container exposed port
+
+
+ # Redis
+ redis_db: # service name
+  container_name: redis # can skip container_name, if service name and container_name is same
+  image: redis
+  ports:
+   - "6379:6379"
