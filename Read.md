@@ -1,21 +1,12 @@
-==========================================================================
-Create .env and define these variables
-==========================================================================
-NODE_ENV = development
-PORT = 3000
-JWT_SECRET = 'YOUR_JWT_TOKKEN'
+# The Project is developed in Ubuntu 22.xx.xx
 
-# not needed for Dockerfile, as they are already defined
-REDIS_URI = redis://127.0.0.1:6379 # or redis://localhost:6379
+# Node Sequelize Postgres Redis Docker
+This is a scalable project boilerplate for applications being developed using the ExpresJs Sequelize Postgres Redis and Docker technologies. Dockerfile is used with compose.yml to connect the different pieces of Redis and Postgres in a single container. Compose yml file is well commented for the sake of understanding each command.
 
-# not needed for Dockerfile, as they are already defined
-# postgres://<db_user>:<db_password>@127.0.0.1:5432/dev_db
-DEV_DATABASE_URI = postgres://postgres:Root12345@127.0.0.1:5432/dev
+This is an exemplary reusable, scalable, optimized dockerized code. 
 
 
-==========================================================================
-Running the application using docker
-==========================================================================
+# Running the application using docker
 Make sure you stop your host/machine postgres and redis
 Postgres:
 sudo systemctl stop postgresql 
@@ -24,21 +15,15 @@ Redis:
 sudo systemctl stop redis-server 
 
 
-==========================================================================
-Docker compose for building containers
-==========================================================================
+# Docker compose for building containers
 docker compose up --build
 
 
-==========================================================================
-Docker compose for stopping and removing containers
-==========================================================================
+# Docker compose for stopping and removing containers
 docker compose down -v
 
 
-==========================================================================
-If still not all containers are completely removed
-==========================================================================
+# If still not all containers are completely removed
 Stop all containers:
 docker stop $(docker ps -aq)
 
@@ -48,36 +33,29 @@ docker rm $(docker ps -aq)
 Remove all containers:
 docker rmi $(docker images -q)
 
+Remove all containers focefully:
+docker rmi -f $(docker images -q)
 
-==========================================================================
-Docker for checking running containers
-==========================================================================
-docker ps
 
-==========================================================================
-Getting inside the running containers
-==========================================================================
+# Docker for checking running containers
+docker ps -a
+
+# Getting inside the running containers
 docker exec -it [CONTAINER_ID] /bin/bash
 
 
-==========================================================================
-Check endpoint
-==========================================================================
+# Check endpoint
 http://localhost:3000/api/posts
 
 
-==========================================================================
-*Note*
+# Note
 - We have used sequelize for postgres database
 - But if don't use sequelize for postgres database, then i have included the 
 postgres folder that is compatible with docker as well
-==========================================================================
 
 
-==========================================================================
-Sequelize
-Create Models and Migrations
-==========================================================================
+# Sequelize
+# Create Models and Migrations
 sequelize model:generate --name User --attributes name:string,email:string
 
 sequelize model:generate --name Post --attributes title:string,content:text,userId:integer
@@ -85,15 +63,11 @@ sequelize model:generate --name Post --attributes title:string,content:text,user
 sequelize model:generate --name Comment --attributes postId:integer,comment:text,userId:integer
 
 
-==========================================================================
-Translate the Migrations into Tables
-==========================================================================
+# Translate the Migrations into Tables
 sequelize db:migrate
 
 
-==========================================================================
-Create Seed Files
-==========================================================================
+# Create Seed Files
 sequelize seed:generate --name User
 
 sequelize seed:generate --name Post
@@ -101,7 +75,5 @@ sequelize seed:generate --name Post
 sequelize seed:generate --name Comment
 
 
-==========================================================================
-Seed The Database
-==========================================================================
+# Seed The Database
 sequelize db:seed:all
