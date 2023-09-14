@@ -35,7 +35,7 @@ docker rmi $(docker images -q)
 
 
 # Docker for checking running containers
-docker ps
+docker ps -a
 
 # Getting inside the running containers
 docker exec -it [CONTAINER_ID] /bin/bash
